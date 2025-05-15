@@ -1,5 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
+const isAuth = require("../middlewares/isAuth");
 const {
   createTodo,
   retrieveTodo,
@@ -12,10 +13,11 @@ const todoRouter = express.Router();
 
 todoRouter.post(
   "/",
+  isAuth,
   [body("task").not().isEmpty().withMessage("task field required")],
   createTodo
 );
-todoRouter.get("/", retrieveTodo);
+todoRouter.get("/", isAuth, retrieveTodo);
 todoRouter.get("/:id", retriveTodoById);
 todoRouter.put("/:id", updateTodo);
 todoRouter.delete("/:id", deleteTodo);
