@@ -30,9 +30,13 @@ const retrieveTodo = async (req, res) => {
   try {
     const findTasks = await todoModel.find();
     if (findTasks.length === 0) {
-      res.status(404).json({ message: "no Tasks available" });
+      res.status(404).json({ message: "No Tasks available" });
     }
-    res.status(201).json({ message: "All tasks", tasks: findTasks });
+    res.status(200).json({
+      message: "All tasks",
+      numberOfTasks: findTasks.length,
+      tasks: findTasks,
+    });
   } catch (error) {
     res.status(500).json({ message: "failed to retrieve todo" });
   }
@@ -66,11 +70,9 @@ const updateTodo = async (req, res) => {
       { new: true }
     );
     if (!updatedTask) {
-      res.status(400).json({ message: "task not found" });
-      res
-        .status(200)
-        .json({ message: "task updated succesfully", updatedTask });
+      return res.status(404).json({ message: "Task not found" });
     }
+    res.status(200).json({ message: "task updated successfully", updatedTask });
   } catch (error) {
     res.status(500).json({ message: "failed to update todo" });
   }
@@ -78,8 +80,14 @@ const updateTodo = async (req, res) => {
 
 const deleteTodo = async (req, res) => {
   try {
+    const id = req.params.id;
+    const deletedTask = await todoModel.findByIdAndDelete(id);
+    if (!deletedTask) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.status(200).json({ message: "Task deleted successfully", deletedTask });
   } catch (error) {
-    res.status(500).json({ message: "failed to delete todo" });
+    res.status(500).json({ message: "failed to delete a Task" });
   }
 };
 
