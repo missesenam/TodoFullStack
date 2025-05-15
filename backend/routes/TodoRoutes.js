@@ -1,4 +1,5 @@
 const express = require("express");
+const { body } = require("express-validator");
 const {
   createTodo,
   retrieveTodo,
@@ -9,7 +10,11 @@ const {
 
 const todoRouter = express.Router();
 
-todoRouter.post("/", createTodo);
+todoRouter.post(
+  "/",
+  [body("task").not().isEmpty().withMessage("task field required")],
+  createTodo
+);
 todoRouter.get("/", retrieveTodo);
 todoRouter.get("/:id", retriveTodoById);
 todoRouter.put("/:id", updateTodo);
