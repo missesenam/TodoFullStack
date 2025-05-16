@@ -13,11 +13,15 @@ const todoRouter = express.Router();
 
 todoRouter.post(
   "/",
-  isAuth,
+  // isAuth,
   [body("task").not().isEmpty().withMessage("task field required")],
   createTodo
 );
-todoRouter.get("/", isAuth, retrieveTodo);
+todoRouter.get(
+  "/",
+  //  isAuth,
+  retrieveTodo
+);
 todoRouter.get("/:id", retriveTodoById);
 todoRouter.put("/:id", updateTodo);
 todoRouter.delete("/:id", deleteTodo);
