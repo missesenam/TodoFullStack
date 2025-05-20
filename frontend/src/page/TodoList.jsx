@@ -26,8 +26,6 @@ const TodoList = () => {
         {/* tasks */}
         <div className="mt-8 space-y-3">
           <TodoItem />
-          <TodoItem />
-          <TodoItem />
         </div>
       </div>
     </div>
