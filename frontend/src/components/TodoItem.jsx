@@ -5,7 +5,7 @@ import { toggleModal } from "../slices/modalSlice";
 // import { fetchTodos } from "../slices/todoSlice";
 import axios from "axios";
 
-const TodoItem = () => {
+const TodoItem = ({ data, refreshTodos }) => {
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
   // const listoftodos = useSelector((state) => state.todolist.listoftodos);
@@ -15,51 +15,76 @@ const TodoItem = () => {
   // useEffect(() => {
   //   dispatch(fetchTodos());
   // }, [dispatch]);
-  const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/todos")
-      .then((response) => {
-        console.log("Fetched Data:", response.data);
-        if (response.data && Array.isArray(response.data.tasks)) {
-          setData(response.data.tasks);
-        } else {
-          console.error("Unexpected data format:", response.data);
-          setData([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    refreshTodos();
   }, []);
+  // delete task
+  const deleteTodo = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/todos/${id}`);
+      // Optionally refresh the todo list
+      refreshTodos(); // Call this if passed from parent
+    } catch (error) {
+      console.error("Failed to delete todo:", error);
+    }
+  };
+  // update
+  const handleEdit = (updatedTodo) => {
+    // setData((prev) =>
+    //   prev.map((item) => (item._id === updatedTodo._id ? updatedTodo : item))
+    // );
+    refreshTodos();
+  };
 
+  //
+  const [editingTodo, setEditingTodo] = useState(null);
+
+  const openEditModal = (todo) => {
+    setEditingTodo(todo);
+    dispatch(toggleModal());
+  };
   return (
     <>
       {data.length > 0 ? (
         data.map((todo) => (
           <div
             key={todo._id}
-            className="flex justify-between items-center p-4 my-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow duration-200"
+            className="flex flex-col p-4 my-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow duration-200"
           >
-            <span className="font-medium text-gray-800 cursor-pointer hover:text-blue-600 transition-colors duration-200">
-              {todo.task}
-            </span>
-            <div className="flex gap-3">
-              <button className="px-3 py-1 rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200 cursor-pointer">
-                Complete
-              </button>
-              <button
-                className="px-3 py-1 rounded-md text-white bg-yellow-500 hover:bg-yellow-600 transition-colors duration-200 cursor-pointer"
-                onClick={() => dispatch(toggleModal())}
-              >
-                Edit
-              </button>
-              <button className="px-3 py-1 rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors duration-200 cursor-pointer">
-                Delete
-              </button>
-              {isModalOpen && <EditTask />}
+            {/* Task Title Row */}
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium text-gray-800 cursor-pointer hover:text-blue-600 transition-colors duration-200">
+                {todo.task}
+              </span>
+              <div className="flex gap-3">
+                <button className="px-3 py-1 rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200 cursor-pointer">
+                  Complete
+                </button>
+                <button
+                  className="px-3 py-1 rounded-md text-white bg-yellow-500 hover:bg-yellow-600 transition-colors duration-200 cursor-pointer"
+                  onClick={() => openEditModal(todo)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="px-3 py-1 rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors duration-200 cursor-pointer"
+                  onClick={() => deleteTodo(todo._id)}
+                >
+                  Delete
+                </button>
+                {isModalOpen && editingTodo && (
+                  <EditTask todo={editingTodo} onEdit={handleEdit} />
+                )}
+              </div>
             </div>
+
+            {/* Description Section */}
+            {todo.description && (
+              <div className="mt-2">
+                <p className="text-gray-600 text-sm">{todo.description}</p>
+              </div>
+            )}
           </div>
         ))
       ) : (

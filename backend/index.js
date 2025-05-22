@@ -12,7 +12,7 @@ const app = express();
 // anabling cors with specific origin requirement
 const corsOptions = {
   origin: ["http://localhost:5173", "https://your-frontend.com"],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE", "PUT"],
   credentials: true,
 };
 app.use(cors(corsOptions));
