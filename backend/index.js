@@ -10,12 +10,20 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // anabling cors with specific origin requirement
-const corsOptions = {
+// Define specific CORS options
+const todoCorsOptions = {
   origin: ["http://localhost:5173", "https://your-frontend.com"],
   methods: ["GET", "POST", "DELETE", "PUT"],
   credentials: true,
 };
-app.use(cors(corsOptions));
+
+const userCorsOptions = {
+  origin: ["http://localhost:5173", "https://your-frontend.com"],
+  methods: ["POST"],
+  credentials: true,
+};
+// generall cors
+// app.use(cors(corsOptions));
 
 // routers
 const todoRouter = require("./routes/TodoRoutes");
@@ -25,8 +33,8 @@ const userRouter = require("./routes/UserRoutes");
 app.use(bodyParser.json());
 
 // Router and cors middlesware
-app.use("/api/todos", todoRouter);
-app.use("/api/users", userRouter);
+app.use("/api/todos", cors(todoCorsOptions), todoRouter);
+app.use("/api/users", cors(userCorsOptions), userRouter);
 // app.use(cors());
 
 // connection
