@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { store } from "./store/todoStore";
 import { Provider } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 const container = document.getElementById("root");
 
@@ -13,6 +14,7 @@ if (container) {
     <StrictMode>
       <Provider store={store}>
         <App />
+        <Toaster />
       </Provider>
     </StrictMode>
   );

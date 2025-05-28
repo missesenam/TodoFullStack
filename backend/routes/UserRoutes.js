@@ -15,6 +15,7 @@ const checkUniqueness = async (value, { req, path }) => {
     const isMatch = await userModel.findOne({ [path]: value });
     if (isMatch) {
       return Promise.reject(`${path} already exists`);
+      // throw new Error(`${path} already exists`);
     }
   } catch (err) {
     return Promise.reject("Error checking uniqueness");

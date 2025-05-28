@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { postUser } from "../slices/registration";
+import toast from "react-hot-toast";
 
 export default function SignUp() {
   const dispatch = useDispatch();
@@ -20,9 +21,14 @@ export default function SignUp() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(postUser(formData));
+    const resultAction = await dispatch(postUser(formData));
+    if (postUser.fulfilled.match(resultAction)) {
+      toast.success("Signup successful! 🎉");
+    } else {
+      toast.error("Signup failed. Please try again.");
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-100 px-4">
