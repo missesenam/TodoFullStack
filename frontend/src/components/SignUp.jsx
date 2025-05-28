@@ -1,14 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { postUser } from "../slices/registration";
 
 export default function SignUp() {
+  const dispatch = useDispatch();
+  const { status, error } = useSelector((state) => state.registration);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(postUser(formData));
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-100 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
           Sign Up
         </h2>
-        <form>
+        {/* method="POST" */}
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="name"
@@ -20,8 +43,10 @@ export default function SignUp() {
               type="text"
               id="name"
               name="name"
+              value={formData.name}
               placeholder="Your full name"
               className="w-full px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handleChange}
             />
           </div>
 
@@ -36,8 +61,10 @@ export default function SignUp() {
               type="email"
               id="email"
               name="email"
+              value={formData.email}
               placeholder="you@example.com"
               className="w-full px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handleChange}
             />
           </div>
 
@@ -52,19 +79,27 @@ export default function SignUp() {
               type="password"
               id="password"
               name="password"
+              value={formData.password}
               placeholder="********"
               className="w-full px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handleChange}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-300"
+            className="w-full 
+          bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-300"
           >
-            Sign Up
+            {status === "loading" ? "Signing up..." : "Sign Up"}
           </button>
+          {status === "succeeded" && (
+            <p className="text-green-600">Signup successful!</p>
+          )}
+          {status === "failed" && (
+            <p className="text-red-500">Error: {error}</p>
+          )}
         </form>
-
         <p className="text-sm text-center text-gray-700 mt-4">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-600 hover:underline">

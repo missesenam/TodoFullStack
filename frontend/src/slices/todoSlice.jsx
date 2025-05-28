@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Fetch todos from backend
 export const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
@@ -6,6 +7,7 @@ export const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
     const response = await axios.get("http://localhost:5000/api/todos");
     return response.data;
   } catch (error) {
+    console.log("LogOut error:", error);
     throw new Error("Failed to fetch todos");
   }
 });
@@ -36,6 +38,6 @@ export const todoSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {} = todoSlice.actions;
+// export const {} = todoSlice.actions;
 
 export default todoSlice.reducer;

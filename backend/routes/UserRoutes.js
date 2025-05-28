@@ -3,6 +3,7 @@ const {
   signUp,
   retrieveUsers,
   signIn,
+  signOut,
 } = require("../controllers/UserControllers");
 const { body } = require("express-validator");
 const userModel = require("../models/UserModel");
@@ -39,5 +40,6 @@ userRouter.post(
 );
 userRouter.get("/getusers", retrieveUsers);
 userRouter.post("/signin", signIn);
+userRouter.post("/signout", signOut);
 
 module.exports = userRouter;

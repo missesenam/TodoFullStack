@@ -48,7 +48,9 @@ export default function Login() {
             <Link to="/todolist">Login</Link>
           </button>
         </form>
-
+        <a href="" className="text-red-500">
+          password forgotten
+        </a>
         <p className="text-sm text-center text-gray-700 mt-4">
           Don't have an account?{" "}
           <Link to="/" className="text-blue-600 hover:underline">

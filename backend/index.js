@@ -34,7 +34,7 @@ app.use(bodyParser.json());
 
 // Router and cors middlesware
 app.use("/api/todos", cors(todoCorsOptions), todoRouter);
-app.use("/api/users", cors(userCorsOptions), userRouter);
+app.use("/api/auth", cors(userCorsOptions), userRouter);
 // app.use(cors());
 
 // connection
