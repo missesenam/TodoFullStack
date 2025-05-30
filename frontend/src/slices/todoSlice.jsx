@@ -1,19 +1,42 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Fetch todos from backend
-export const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
-  try {
-    const response = await axios.get("http://localhost:5000/api/todos");
-    return response.data;
-  } catch (error) {
-    console.log("LogOut error:", error);
-    throw new Error("Failed to fetch todos");
+// Async thunk to fetch todos
+export const fetchTodos = createAsyncThunk(
+  "todolist/fetchTodos",
+  async (_, { rejectWithValue }) => {
+    try {
+      // Add 1 second delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await axios.get("http://localhost:5000/api/todos", {
+        withCredentials: true,
+      });
+
+      if (response.data && Array.isArray(response.data.tasks)) {
+        return response.data.tasks;
+      } else {
+        return rejectWithValue("Unexpected response format.");
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status === 404 &&
+        error.response.data.message === "No Tasks available"
+      ) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(
+          error.response?.data?.message || "Failed to fetch todos"
+        );
+      }
+    }
   }
-});
+);
 
 const initialState = {
   listoftodos: [],
+  loading: false,
+  error: null, // can store "No Tasks available" here
 };
 
 export const todoSlice = createSlice({
@@ -28,16 +51,15 @@ export const todoSlice = createSlice({
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
         state.loading = false;
-        state.listoftodos = action.payload; // Corrected assignment
+        state.listoftodos = action.payload;
+        state.error = null;
       })
       .addCase(fetchTodos.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.listoftodos = []; // clear todos
+        state.error = action.payload || action.error.message;
       });
   },
 });
-
-// Action creators are generated for each case reducer function
-// export const {} = todoSlice.actions;
 
 export default todoSlice.reducer;

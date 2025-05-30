@@ -1,7 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchTodos } from "../slices/todoSlice";
 
-const TodoInput = ({ onTodoAdded }) => {
+const TodoInput = () => {
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     task: "",
     description: "",
@@ -25,7 +29,7 @@ const TodoInput = ({ onTodoAdded }) => {
 
       // reset form
       setFormData({ task: "", description: "" });
-      onTodoAdded();
+      dispatch(fetchTodos());
     } catch (err) {
       console.log(err);
     }

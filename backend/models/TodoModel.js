@@ -21,6 +21,11 @@ const todoSchema = new Schema({
     default: Date.now(),
     required: true,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 const TodoModel = mongoose.model("Todo", todoSchema);

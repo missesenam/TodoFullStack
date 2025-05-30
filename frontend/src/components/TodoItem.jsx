@@ -2,29 +2,28 @@ import React, { useState, useEffect } from "react";
 import EditTask from "./EditTask";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../slices/modalSlice";
-// import { fetchTodos } from "../slices/todoSlice";
+import { fetchTodos } from "../slices/todoSlice";
 import axios from "axios";
 
-const TodoItem = ({ data, refreshTodos, erromsg }) => {
+const TodoItem = () => {
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
-  // const listoftodos = useSelector((state) => state.todolist.listoftodos);
   const dispatch = useDispatch();
+  const { listoftodos, loading, error } = useSelector(
+    (state) => state.todolist
+  );
 
   // Fetch todos on mount
-  // useEffect(() => {
-  //   dispatch(fetchTodos());
-  // }, [dispatch]);
-
   useEffect(() => {
-    refreshTodos();
-  }, []);
+    dispatch(fetchTodos());
+  }, [dispatch]);
+
   // delete task
   const deleteTodo = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/todos/${id}`);
       // Optionally refresh the todo list
-      refreshTodos(); // Call this if passed from parent
+      dispatch(fetchTodos()); // Call this if passed from parent
     } catch (error) {
       console.error("Failed to delete todo:", error);
     }
@@ -34,7 +33,7 @@ const TodoItem = ({ data, refreshTodos, erromsg }) => {
     // setData((prev) =>
     //   prev.map((item) => (item._id === updatedTodo._id ? updatedTodo : item))
     // );
-    refreshTodos();
+    dispatch(fetchTodos());
   };
 
   //
@@ -46,8 +45,9 @@ const TodoItem = ({ data, refreshTodos, erromsg }) => {
   };
   return (
     <>
-      {data.length > 0 ? (
-        data.map((todo) => (
+      {loading && <p className="text-blue-500">Loading...</p>}
+      {listoftodos.length > 0 ? (
+        listoftodos.map((todo) => (
           <div
             key={todo._id}
             className="flex flex-col p-4 my-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow duration-200"
@@ -88,7 +88,7 @@ const TodoItem = ({ data, refreshTodos, erromsg }) => {
           </div>
         ))
       ) : (
-        <p className="text-gray-500">{erromsg}</p>
+        <p className="text-gray-500">{error}</p>
       )}
     </>
   );

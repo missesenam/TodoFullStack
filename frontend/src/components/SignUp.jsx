@@ -27,8 +27,6 @@ export default function SignUp() {
     const resultAction = await dispatch(postUser(formData));
     if (postUser.fulfilled.match(resultAction)) {
       toast.success("Signup successful! 🎉");
-      // Redirect here or inside useEffect
-      // navigate("/login");
     } else {
       toast.error("Signup failed. Please try again.");
     }

@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMsg(null);
 
     try {
       const res = await axios.post(
@@ -19,16 +18,13 @@ export default function Login() {
         { withCredentials: true }
       );
       console.log("Login successful:", res.data);
+      toast.success("Login successful!");
 
-      // Optional: store in localStorage or Redux
-      // localStorage.setItem("user", JSON.stringify(res.data.user));
-
-      navigate("/todolist");
+      setTimeout(() => navigate("/todolist"), 1000);
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      setErrorMsg(
-        error.response?.data?.message || "Something went wrong. Try again."
-      );
+      const message =
+        error.response?.data?.message || "Something went wrong. Try again.";
+      toast.error(message);
     }
   };
 
@@ -38,11 +34,6 @@ export default function Login() {
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
           Login
         </h2>
-        {errorMsg && (
-          <div className="mb-4 text-red-600 font-medium text-center">
-            {errorMsg}
-          </div>
-        )}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label
