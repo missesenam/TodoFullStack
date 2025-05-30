@@ -5,7 +5,7 @@ import { toggleModal } from "../slices/modalSlice";
 // import { fetchTodos } from "../slices/todoSlice";
 import axios from "axios";
 
-const TodoItem = ({ data, refreshTodos }) => {
+const TodoItem = ({ data, refreshTodos, erromsg }) => {
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
   // const listoftodos = useSelector((state) => state.todolist.listoftodos);
@@ -88,7 +88,7 @@ const TodoItem = ({ data, refreshTodos }) => {
           </div>
         ))
       ) : (
-        <p className="text-gray-500">No todos found.</p>
+        <p className="text-gray-500">{erromsg}</p>
       )}
     </>
   );

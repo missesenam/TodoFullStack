@@ -30,7 +30,7 @@ const retrieveTodo = async (req, res) => {
   try {
     const findTasks = await todoModel.find();
     if (findTasks.length === 0) {
-      res.status(404).json({ message: "No Tasks available" });
+      return res.status(404).json({ message: "No Tasks available", tasks: [] });
     }
     res.status(200).json({
       message: "All tasks",

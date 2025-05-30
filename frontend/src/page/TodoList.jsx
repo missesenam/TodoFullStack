@@ -5,23 +5,33 @@ import axios from "axios";
 
 const TodoList = () => {
   const [data, setData] = useState([]);
+  const [message, setMessage] = useState("");
 
-  const fetchTodos = () => {
-    axios
-      .get("http://localhost:5000/api/todos")
-      .then((response) => {
-        // console.log("Fetched Data:", response.data);
-        if (response.data && Array.isArray(response.data.tasks)) {
-          setData(response.data.tasks);
-        } else {
-          console.error("Unexpected data format:", response.data);
-          setData([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+  const fetchTodos = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/todos");
+
+      if (response.data && Array.isArray(response.data.tasks)) {
+        setData(response.data.tasks);
+      } else {
+        console.error("Unexpected data format:", response.data);
+        setData([]);
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status === 404 &&
+        error.response.data.message === "No Tasks available"
+      ) {
+        console.log("Message:", error.response.data.message);
+        setMessage(error.response.data.message);
+        setData([]); // Treat as empty list
+      } else {
+        console.error("Unexpected error fetching tasks:", error);
+      }
+    }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="p-8 bg-white rounded-xl shadow-lg max-w-3xl w-full">
@@ -44,7 +54,7 @@ const TodoList = () => {
         </div>
         {/* tasks */}
         <div className="mt-8 space-y-3">
-          <TodoItem data={data} refreshTodos={fetchTodos} />
+          <TodoItem data={data} refreshTodos={fetchTodos} erromsg={message} />
         </div>
       </div>
     </div>

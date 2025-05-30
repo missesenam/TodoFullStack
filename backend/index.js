@@ -5,6 +5,10 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
 const port = process.env.PORT || 5000;
+const cookieParser = require("cookie-parser");
+// routers
+const todoRouter = require("./routes/TodoRoutes");
+const userRouter = require("./routes/UserRoutes");
 
 // server
 const app = express();
@@ -25,12 +29,9 @@ const userCorsOptions = {
 // generall cors
 // app.use(cors(corsOptions));
 
-// routers
-const todoRouter = require("./routes/TodoRoutes");
-const userRouter = require("./routes/UserRoutes");
-
-// body parser middleware
+// body parser,cookie middleware
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Router and cors middlesware
 app.use("/api/todos", cors(todoCorsOptions), todoRouter);

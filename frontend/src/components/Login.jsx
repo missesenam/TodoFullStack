@@ -1,14 +1,49 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setErrorMsg(null);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/signin",
+        { email, password },
+        { withCredentials: true }
+      );
+      console.log("Login successful:", res.data);
+
+      // Optional: store in localStorage or Redux
+      // localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      navigate("/todolist");
+    } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
+      setErrorMsg(
+        error.response?.data?.message || "Something went wrong. Try again."
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-100 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
           Login
         </h2>
-        <form>
+        {errorMsg && (
+          <div className="mb-4 text-red-600 font-medium text-center">
+            {errorMsg}
+          </div>
+        )}
+        <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -21,7 +56,10 @@ export default function Login() {
               id="email"
               name="email"
               placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
             />
           </div>
 
@@ -37,7 +75,10 @@ export default function Login() {
               id="password"
               name="password"
               placeholder="********"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
             />
           </div>
 
@@ -45,9 +86,10 @@ export default function Login() {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-300"
           >
-            <Link to="/todolist">Login</Link>
+            Login
           </button>
         </form>
+
         <div className="flex items-center justify-between my-5">
           <label className="flex items-center space-x-2 text-sm text-gray-700">
             <input

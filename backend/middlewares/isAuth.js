@@ -4,13 +4,13 @@ require("dotenv").config();
 const isAuth = (req, res, next) => {
   try {
     // Extract the token from the Authorization header
-    const authorizationHeader = req.get("Authorization");
-    if (!authorizationHeader) {
-      return res.status(401).json({ message: "Authorization not found" });
-    }
+    // const authorizationHeader = req.get("Authorization");
+    // if (!authorizationHeader) {
+    //   return res.status(401).json({ message: "Authorization not found" });
+    // }
 
     // Get the token
-    const token = authorizationHeader.split(" ")[1];
+    const token = req.cookies.token;
     if (!token) {
       return res.status(404).json({ message: "Token invalid or not found" });
     }
