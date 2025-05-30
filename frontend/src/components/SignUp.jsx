@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { postUser } from "../slices/registration";
 import toast from "react-hot-toast";
 
 export default function SignUp() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { status, error } = useSelector((state) => state.registration);
 
   const [formData, setFormData] = useState({
@@ -26,10 +27,23 @@ export default function SignUp() {
     const resultAction = await dispatch(postUser(formData));
     if (postUser.fulfilled.match(resultAction)) {
       toast.success("Signup successful! 🎉");
+      // Redirect here or inside useEffect
+      // navigate("/login");
     } else {
       toast.error("Signup failed. Please try again.");
     }
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+    });
   };
+  // Redirect when signup status changes to succeeded
+  useEffect(() => {
+    if (status === "succeeded") {
+      navigate("/login");
+    }
+  }, [status, navigate]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-100 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
@@ -95,13 +109,10 @@ export default function SignUp() {
           <button
             type="submit"
             className="w-full 
-          bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-300"
+          bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-300 cursor-pointer"
           >
             {status === "loading" ? "Signing up..." : "Sign Up"}
           </button>
-          {status === "succeeded" && (
-            <p className="text-green-600">Signup successful!</p>
-          )}
           {status === "failed" && (
             <p className="text-red-500">Error: {error}</p>
           )}

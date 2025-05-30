@@ -48,9 +48,23 @@ export default function Login() {
             <Link to="/todolist">Login</Link>
           </button>
         </form>
-        <a href="" className="text-red-500">
-          password forgotten
-        </a>
+        <div className="flex items-center justify-between my-5">
+          <label className="flex items-center space-x-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              name="keepSignedIn"
+              className="form-checkbox h-4 w-4 text-blue-600"
+            />
+            <span>Keep me signed in</span>
+          </label>
+          <Link
+            to="/forgotpassword"
+            className="text-sm text-red-500 hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
         <p className="text-sm text-center text-gray-700 mt-4">
           Don't have an account?{" "}
           <Link to="/" className="text-blue-600 hover:underline">

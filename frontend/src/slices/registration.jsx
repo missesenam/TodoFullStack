@@ -12,10 +12,15 @@ export const postUser = createAsyncThunk(
       );
       console.log("Response data:", response.data);
       return response.data;
-    } catch (err) {
+    } catch (error) {
       return rejectWithValue(
-        err.response?.data?.message || "Something went wrong"
+        error.response?.data?.message || "Something went wrong"
       );
+      // if (error.response && error.response.data.error) {
+      //   // ⚠️ Match the exact key: "error"
+      //   return rejectWithValue(error.response.data.error); // <-- This is the array
+      // }
+      // return rejectWithValue([{ msg: "Something went wrong" }]);
     }
   }
 );
