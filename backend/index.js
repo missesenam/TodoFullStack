@@ -15,27 +15,33 @@ const app = express();
 
 // anabling cors with specific origin requirement
 // Define specific CORS options
-const todoCorsOptions = {
+// const todoCorsOptions = {
+//   origin: ["http://localhost:5173", "https://your-frontend.com"],
+//   methods: ["GET", "POST", "DELETE", "PUT"],
+//   credentials: true,
+// };
+
+// const userCorsOptions = {
+//   origin: ["http://localhost:5173", "https://your-frontend.com"],
+//   methods: ["POST"],
+//   credentials: true,
+// };
+// ✅ CORS options
+const corsOptions = {
   origin: ["http://localhost:5173", "https://your-frontend.com"],
   methods: ["GET", "POST", "DELETE", "PUT"],
   credentials: true,
 };
-
-const userCorsOptions = {
-  origin: ["http://localhost:5173", "https://your-frontend.com"],
-  methods: ["POST"],
-  credentials: true,
-};
 // generall cors
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 // body parser,cookie middleware
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Router and cors middlesware
-app.use("/api/todos", cors(todoCorsOptions), todoRouter);
-app.use("/api/auth", cors(userCorsOptions), userRouter);
+app.use("/api/todos", todoRouter);
+app.use("/api/auth", userRouter);
 // app.use(cors());
 
 // connection

@@ -23,7 +23,10 @@ const TodoInput = () => {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/todos",
-        formData
+        formData,
+        {
+          withCredentials: true,
+        }
       );
       console.log("Todo created:", response.data);
 

@@ -1,11 +1,47 @@
 import React, { useState, useEffect } from "react";
 import TodoItem from "../components/TodoItem";
 import TodoInput from "../components/TodoInput";
+import Logout from "../components/LogOut";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const TodoList = () => {
+  const { user } = useSelector((state) => state.auth);
+  console.log("User from login redux:", user);
+  //   const navigate = useNavigate();
+
+  // const handleLogout = () => {
+  //   setUser(null);
+  //   toast.success("Logout successful! 🎉");
+  //   // redirect or any other cleanup
+  //   navigate("/login");
+
+  // };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="p-8 bg-white rounded-xl shadow-lg max-w-3xl w-full">
+        <div>
+          <div>
+            {user && user.name ? (
+              <>
+                <p>Welcome, {user.name}</p>
+                <Logout />
+              </>
+            ) : (
+              <p>welcome, User</p>
+            )}
+          </div>
+
+          {/* {user ? (
+            <>
+              <p>Welcome, {user.name}</p>
+              <Logout onLogout={handleLogout} />
+            </>
+          ) : (
+            <p>Please login</p>
+          )} */}
+        </div>
         <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-6 tracking-wide font-serif">
           Todo List
         </h1>

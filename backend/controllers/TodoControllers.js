@@ -5,7 +5,7 @@ const createTodo = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res
+      return res
         .status(400)
         .json({ message: "validation failed", error: errors.array() });
     }
@@ -15,10 +15,12 @@ const createTodo = async (req, res) => {
       task,
       description,
       completed,
+      user: req.user.userId,
     });
     res
       .status(201)
       .json({ message: "Task created successfully", task: newTask });
+    console.log("User info from token:", req.user);
   } catch (error) {
     res
       .status(500)
@@ -28,7 +30,8 @@ const createTodo = async (req, res) => {
 
 const retrieveTodo = async (req, res) => {
   try {
-    const findTasks = await todoModel.find();
+    const userId = req.user.userId;
+    const findTasks = await todoModel.find({ user: userId });
     if (findTasks.length === 0) {
       return res.status(404).json({ message: "No Tasks available", tasks: [] });
     }
@@ -60,6 +63,17 @@ const updateTodo = async (req, res) => {
   try {
     const { task, description, completed } = req.body;
     const id = req.params.id;
+    // Ensure the task belongs to the logged-in user
+    const existingTask = await todoModel.findOne({
+      _id: id,
+      user: req.user.userId,
+    });
+    if (!existingTask) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to update this task" });
+    }
+
     const updatedTask = await todoModel.findByIdAndUpdate(
       id,
       {
@@ -81,6 +95,15 @@ const updateTodo = async (req, res) => {
 const deleteTodo = async (req, res) => {
   try {
     const id = req.params.id;
+    const existingTask = await todoModel.findOne({
+      _id: id,
+      user: req.user.userId,
+    });
+    if (!existingTask) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this task" });
+    }
     const deletedTask = await todoModel.findByIdAndDelete(id);
     if (!deletedTask) {
       return res.status(404).json({ message: "Task not found" });

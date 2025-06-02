@@ -27,22 +27,28 @@
 //   }
 // };
 
-// module.exports = isAuth;
+// module.exports = isAuth;console.log("TOKEN:", token);
+// console.log("Cookies:", req.cookies);
 
 // middleware/authMiddleware.js
 const jwt = require("jsonwebtoken");
-const User = require("../models/UserModel");
 
-const isAuth = async (req, res, next) => {
+const isAuth = (req, res, next) => {
   const token = req.cookies.token;
 
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  if (!token) {
+    console.log("❌ No token found");
+    return res.status(401).json({ message: "No token, unauthorized" });
+  }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select("-password");
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    req.user = decoded;
+    console.log("User info from token:", req.user);
+
     next();
-  } catch (err) {
+  } catch (error) {
+    console.log("❌ Invalid token error:", error.message);
     return res.status(401).json({ message: "Invalid token" });
   }
 };

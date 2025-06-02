@@ -26,11 +26,12 @@ export const postUser = createAsyncThunk(
 );
 
 const initialState = {
-  user: {
-    name: "",
-    email: "",
-    password: "",
-  },
+  // user: {
+  //   name: "",
+  //   email: "",
+  //   password: "",
+  // },
+  user: null,
   status: "idle",
   error: null,
 };
@@ -38,7 +39,13 @@ const initialState = {
 export const registrationSlice = createSlice({
   name: "registration",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.user = { name: "", email: "", password: "" };
+      state.status = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(postUser.pending, (state) => {
@@ -56,6 +63,7 @@ export const registrationSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-// export const {} = registrationSlice.actions;
+export const { logout } = registrationSlice.actions;
+// export const { logout } = registrationSlice.actions;
 
 export default registrationSlice.reducer;
