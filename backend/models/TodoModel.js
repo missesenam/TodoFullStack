@@ -11,6 +11,11 @@ const todoSchema = new Schema({
     type: String,
     required: false,
   },
+  // status: {
+  //   type: String,
+  //   enum: ["Pending", "Completed"],
+  //   default: "Pending",
+  // },
   completed: {
     type: Boolean,
     default: false,

@@ -8,6 +8,7 @@ import todoReducer from "../slices/todoSlice";
 import modalReducer from "../slices/modalSlice";
 import registrationReducer from "../slices/registration";
 import authReducer from "../slices/LogInSlice";
+import forgotPasswordReducer from "../slices/forgotPasswordSlice";
 
 // 1️⃣ Combine all reducers
 const rootReducer = combineReducers({
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   modal: modalReducer,
   registration: registrationReducer,
   auth: authReducer,
+  forgotPassword: forgotPasswordReducer,
 });
 
 // 2️⃣ Persist config for auth slice only

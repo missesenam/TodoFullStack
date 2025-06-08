@@ -34,6 +34,7 @@ const Logout = () => {
         color: "#fff",
         border: "none",
         borderRadius: "5px",
+        marginTop: "10px",
         cursor: "pointer",
         fontWeight: "bold",
         fontSize: "16px",

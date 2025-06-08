@@ -79,7 +79,7 @@ const updateTodo = async (req, res) => {
       {
         task,
         description,
-        completed,
+        completed: true,
       },
       { new: true }
     );

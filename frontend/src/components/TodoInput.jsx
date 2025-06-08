@@ -38,7 +38,7 @@ const TodoInput = () => {
     }
   };
   return (
-    <div className="mx-auto p-4 bg-white rounded-lg shadow-md">
+    <div className="mx-auto p-4 ">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Add New Task</h2>
       <div className="space-y-4">
         <div>
@@ -71,7 +71,7 @@ const TodoInput = () => {
             name="description"
             value={formData.description}
             placeholder="Add details about the task..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[120px]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[90px]"
             onChange={handleChange}
           />
         </div>

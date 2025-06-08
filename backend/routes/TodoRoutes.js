@@ -19,7 +19,9 @@ todoRouter.post(
 );
 todoRouter.get("/", isAuth, retrieveTodo);
 todoRouter.get("/:id", isAuth, retriveTodoById);
+todoRouter.put("/:id/complete", isAuth, updateTodo);
 todoRouter.put("/:id", isAuth, updateTodo);
+
 todoRouter.delete("/:id", isAuth, deleteTodo);
 
 module.exports = todoRouter;

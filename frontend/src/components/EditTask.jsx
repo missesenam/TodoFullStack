@@ -23,7 +23,8 @@ const EditTask = ({ todo, onEdit }) => {
         {
           task: editedTask,
           description: editedDescription,
-        }
+        },
+        { withCredentials: true }
       );
 
       onEdit(response.data.updatedTask); // Pass updated data back to parent

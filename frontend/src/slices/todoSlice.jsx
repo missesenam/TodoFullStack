@@ -7,7 +7,7 @@ export const fetchTodos = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       // Add 1 second delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await axios.get("http://localhost:5000/api/todos", {
         withCredentials: true,
       });

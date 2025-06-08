@@ -5,7 +5,7 @@ import { toggleModal } from "../slices/modalSlice";
 import { fetchTodos } from "../slices/todoSlice";
 import axios from "axios";
 
-const TodoItem = () => {
+const TodoItem = ({ filter }) => {
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
   const dispatch = useDispatch();
@@ -21,7 +21,9 @@ const TodoItem = () => {
   // delete task
   const deleteTodo = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/todos/${id}`);
+      await axios.delete(`http://localhost:5000/api/todos/${id}`, {
+        withCredentials: true,
+      });
       // Optionally refresh the todo list
       dispatch(fetchTodos()); // Call this if passed from parent
     } catch (error) {
@@ -43,11 +45,32 @@ const TodoItem = () => {
     setEditingTodo(todo);
     dispatch(toggleModal());
   };
+  const filteredTodos = listoftodos.filter((todo) => {
+    if (filter === "Completed") return todo.completed;
+    if (filter === "Pending") return !todo.completed;
+    return true; // for "All"
+  });
+
+  const markAsComplete = async (id) => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/todos/${id}/complete`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(fetchTodos()); // Refresh list
+    } catch (error) {
+      console.error("Failed to mark complete:", error);
+    }
+  };
+
   return (
     <>
       {loading && <p className="text-blue-500">Loading...</p>}
-      {listoftodos.length > 0 ? (
-        listoftodos.map((todo) => (
+      {filteredTodos.length > 0 ? (
+        filteredTodos.map((todo) => (
           <div
             key={todo._id}
             className="flex flex-col p-4 my-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow duration-200"
@@ -58,7 +81,10 @@ const TodoItem = () => {
                 {todo.task}
               </span>
               <div className="flex gap-3">
-                <button className="px-3 py-1 rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200 cursor-pointer">
+                <button
+                  className="px-3 py-1 rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200 cursor-pointer"
+                  onClick={() => markAsComplete(todo._id)}
+                >
                   Complete
                 </button>
                 <button
